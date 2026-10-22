@@ -13,7 +13,10 @@ read_byte(void) {
 
 int
 main() {
-  assert(mprotect_alloc(&m, 32) == 0);
+  int e;
+
+  e = mprotect_alloc(&m, 32);
+  assert(e == 0);
 
   expect_fault(read_byte);
 

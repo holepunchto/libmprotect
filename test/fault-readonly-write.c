@@ -12,8 +12,12 @@ write_byte(void) {
 
 int
 main() {
-  assert(mprotect_alloc(&m, 32) == 0);
-  assert(mprotect_readonly(&m) == 0);
+  int e;
+
+  e = mprotect_alloc(&m, 32);
+  assert(e == 0);
+  e = mprotect_readonly(&m);
+  assert(e == 0);
 
   expect_fault(write_byte);
 

@@ -12,8 +12,12 @@ write_past_end(void) {
 
 int
 main() {
-  assert(mprotect_alloc(&m, 32) == 0);
-  assert(mprotect_readwrite(&m) == 0);
+  int e;
+
+  e = mprotect_alloc(&m, 32);
+  assert(e == 0);
+  e = mprotect_readwrite(&m);
+  assert(e == 0);
 
   m.data[31] = 1;
 

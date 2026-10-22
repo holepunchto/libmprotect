@@ -1,6 +1,7 @@
 list(APPEND tests
   alloc
   alloc-empty
+  alloc-fail
   alloc-twice
   fault-noaccess-read
   fault-overflow

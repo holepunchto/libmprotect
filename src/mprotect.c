@@ -31,31 +31,33 @@ mprotect_alloc(mprotect_t *m, size_t len) {
 
   if (sodium_init() == -1) return -ENOSYS;
 
-  m->data = NULL;
-  m->len = len;
-  m->locked = true;
+  uint8_t *data = NULL;
+  bool locked = true;
 
-  // sodium_malloc(0) succeeds but sodium_mprotect_*() then fails on it, so an
-  // empty allocation is bookkeeping only
+  // An empty allocation is bookkeeping only: sodium_malloc(0) would hand out
+  // a pointer to the start of its guard page, which is a confusing thing to
+  // give out as a zero-length buffer
   if (len > 0) {
     errno = 0;
-    m->data = sodium_malloc(len);
-    if (m->data == NULL) return mprotect__error();
+    data = sodium_malloc(len);
+    if (data == NULL) return mprotect__error();
 
     // sodium_malloc() ignores sodium_mlock() failing, so lock again to find out
-    m->locked = sodium_mlock(m->data, len) == 0;
+    locked = sodium_mlock(data, len) == 0;
 
-    sodium_memzero(m->data, len);
+    sodium_memzero(data, len);
 
     errno = 0;
-    if (sodium_mprotect_noaccess(m->data) != 0) {
+    if (sodium_mprotect_noaccess(data) != 0) {
       int err = mprotect__error();
-      sodium_free(m->data);
-      m->data = NULL;
+      sodium_free(data);
       return err;
     }
   }
 
+  m->data = data;
+  m->len = len;
+  m->locked = locked;
   m->state = MPROTECT_NOACCESS;
 
   return 0;

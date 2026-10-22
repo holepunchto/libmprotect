@@ -5,17 +5,24 @@
 
 int
 main() {
+  int e;
+
   mprotect_t m = {0};
 
-  assert(mprotect_noaccess(&m) == -EINVAL);
-  assert(mprotect_readonly(&m) == -EINVAL);
-  assert(mprotect_readwrite(&m) == -EINVAL);
+  e = mprotect_noaccess(&m);
+  assert(e == -EINVAL);
+  e = mprotect_readonly(&m);
+  assert(e == -EINVAL);
+  e = mprotect_readwrite(&m);
+  assert(e == -EINVAL);
 
-  assert(mprotect_alloc(&m, 32) == 0);
+  e = mprotect_alloc(&m, 32);
+  assert(e == 0);
 
   mprotect_free(&m);
   mprotect_free(&m);
 
   assert(m.state == MPROTECT_FREED);
-  assert(mprotect_readwrite(&m) == -EINVAL);
+  e = mprotect_readwrite(&m);
+  assert(e == -EINVAL);
 }
