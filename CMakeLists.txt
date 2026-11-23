@@ -4,7 +4,7 @@ find_package(cmake-fetch REQUIRED PATHS node_modules/cmake-fetch)
 
 project(mprotect C)
 
-fetch_package("github:jedisct1/libsodium#e18eee6" SOURCE_DIR sodium)
+fetch_package("github:jedisct1/libsodium#79a59b7" SOURCE_DIR sodium)
 
 file(COPY_FILE "${sodium}/builds/msvc/version.h" "${sodium}/src/libsodium/include/sodium/version.h")
 
